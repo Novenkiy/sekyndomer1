@@ -1,0 +1,111 @@
+<html>
+<head>
+<style>
+
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap');
+body{font-family:'Inter', sans-serif; font-weight:100;}
+div{ margin:0 auto;}
+
+p {width:100%;font-size:150px; text-align:center; margin:0;}
+button{width:31.5%;
+  margin-left:10px;
+  font-size:50px; font-family:'Inter', sans-serif; border:3px solid #0085ef; background-color:white; transition-duration:1s;
+border-radius:5px;
+}
+button:hover{border-color:green;}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+
+
+</head>
+
+<body>
+
+
+<div ng-app="myApp" ng-controller="myController"><p>{{timerWithTimeout | hhmmss}}</p>
+
+<div  id="nextlevel" style="width:40%;">
+  <button id="nextplay" ng-click="startTimerWithTimeout()">{{number}}</button>
+<button ng-dblclick="timerWithWait()">Wait</button>
+  <button ng-click="resetTimerWithTimeout()">Reset</button></div></div>
+  
+  
+  <script>
+  
+  
+  var app = angular.module("myApp",[]);
+app.controller("myController",function($scope, $timeout, $interval){
+  $scope.number = 'Start';
+  $scope.timerWithTimeout = 0;
+  $scope.startTimerWithTimeout = function() {
+     
+    if($scope.myTimeout){
+       $timeout.cancel($scope.myTimeout);
+    }
+    $scope.onTimeout = function(){
+        $scope.timerWithTimeout++;
+        $scope.myTimeout = $timeout($scope.onTimeout,1000);
+    }
+    $scope.myTimeout = $timeout($scope.onTimeout,1000);
+
+     if($scope.number=='Start'){ nextlevel.style.display = 'none';
+    setTimeout(function() {
+      nextlevel.style.display = '';
+    }, 1);
+    $scope.number='Stop';}
+    else{$scope.number='Start'; 
+         $scope.timerWithTimeout = 0;
+        $timeout.cancel($scope.myTimeout);
+        }
+   };
+  
+  $scope.resetTimerWithTimeout = function(){
+    $scope.timerWithTimeout = 0;
+  }
+  
+  $scope.timerWithWait = function(){
+    $scope.number='Start';
+    $timeout.cancel($scope.myTimeout);
+  }
+  
+  $scope.timerWithInterval = 0;
+   $scope.startTimerWithInterval = function() {
+    $scope.timerWithInterval = 0;
+    if($scope.myInterval){
+      $interval.cancel($scope.myInterval);
+    }
+    $scope.onInterval = function(){
+        $scope.timerWithInterval++;
+    }
+    $scope.myInterval = $interval($scope.onInterval,1000);
+  };
+  
+  $scope.resetTimerWithInterval = function(){
+    $scope.timerWithInterval = 0;
+    $interval.cancel($scope.myInterval);
+  }
+})
+app.filter('hhmmss', function () {
+  return function (time) {
+    var sec_num = parseInt(time, 10); // don't forget the second param
+    var hours   = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    var time    = hours+':'+minutes+':'+seconds;
+    return time;
+  }
+});
+  
+  
+  </script>
+
+
+</body>
+
+</html>
